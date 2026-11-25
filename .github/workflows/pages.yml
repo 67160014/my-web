@@ -27,6 +27,12 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Generate Supabase browser configuration
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          node -e 'const fs=require("node:fs"); const config={url:process.env.SUPABASE_URL||"",publishableKey:process.env.SUPABASE_PUBLISHABLE_KEY||""}; fs.writeFileSync("supabase-config.js", `window.SUPABASE_CONFIG = ${JSON.stringify(config)};\n`);'
       - name: Upload website files
         uses: actions/upload-pages-artifact@v3
         with:

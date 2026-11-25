@@ -208,6 +208,11 @@
 
     .gallery-label { color: var(--muted); font-size: .85rem; }
     .gallery-label strong { color: var(--ink); }
+    .upload-button { position: relative; overflow: hidden; }
+    .upload-button input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+    .upload-button.is-disabled { cursor: not-allowed; opacity: .55; }
+    .upload-note, .upload-status { margin: 0 0 16px; color: var(--muted); font-family: "Kanit", sans-serif; font-size: .84rem; font-weight: 300; }
+    .upload-status { min-height: 1.5em; color: var(--deep-rose); }
 
     .gallery {
       display: grid;
@@ -569,6 +574,7 @@
       .gallery-item:nth-child(5n + 1) { min-height: 270px; }
       .gallery-toolbar { align-items: center; flex-direction: row; }
       .gallery-label { font-size: .7rem; }
+      .upload-button { min-height: 41px; padding-inline: 11px; font-size: .76rem; white-space: nowrap; }
       .memory-grid { grid-template-rows: 145px 145px; gap: 8px; }
       .memory-shot { border-width: 5px; }
       .letter-scene { min-height: 465px; }
@@ -626,10 +632,14 @@
         <div class="gallery-card">
           <div class="gallery-toolbar">
             <span class="gallery-label"><strong id="photo-count">0 รูป</strong> · ความทรงจำของเราสองคน</span>
-            <span class="gallery-label">รูปอยู่กับเว็บไซต์ รีเฟรชก็ไม่หาย ♡</span>
+            <label class="button button-soft upload-button" id="upload-button">♡ เพิ่มรูป
+              <input id="photo-upload" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple aria-label="เลือกรูปเพื่อเพิ่มในอัลบั้ม">
+            </label>
           </div>
+          <p class="upload-note">ใครมีลิงก์นี้ก็เพิ่มรูปได้ · JPG, PNG, WebP หรือ GIF · ไม่เกิน 8 MB ต่อรูป · <a href="https://github.com/67160014/my-web/blob/main/SUPABASE-SETUP.md">วิธีตั้งค่า</a></p>
+          <p class="upload-status" id="upload-status" role="status" aria-live="polite">กำลังเชื่อมต่ออัลบั้มรูป…</p>
           <div class="gallery" id="gallery" aria-live="polite">
-            <div class="gallery-empty" id="gallery-empty"><span>♡</span>อัลบั้มนี้ยังรอรูปของเราอยู่นะ<br>เพิ่มรูปไว้ในโฟลเดอร์ photos แล้วใส่ชื่อไฟล์ในรายการรูปของหน้าเว็บ</div>
+            <div class="gallery-empty" id="gallery-empty"><span>♡</span>อัลบั้มนี้ยังรอรูปของเราอยู่นะ<br>เพิ่มรูปแรกผ่านปุ่มด้านบนได้เลย</div>
           </div>
         </div>
       </div>
@@ -698,6 +708,7 @@
     <span class="lightbox-caption" id="lightbox-caption"></span>
   </div>
 
+  <script src="./supabase-config.js"></script>
   <script>
     const pageNames = ["home", "photos", "memories", "letter"];
     const pageTitles = {
@@ -754,6 +765,9 @@
     const gallery = document.querySelector("#gallery");
     const emptyState = document.querySelector("#gallery-empty");
     const photoCount = document.querySelector("#photo-count");
+    const uploadInput = document.querySelector("#photo-upload");
+    const uploadButton = document.querySelector("#upload-button");
+    const uploadStatus = document.querySelector("#upload-status");
     const lightbox = document.querySelector("#lightbox");
     const lightboxImage = document.querySelector("#lightbox-image");
     const lightboxCaption = document.querySelector("#lightbox-caption");
@@ -762,38 +776,48 @@
     const lightboxNextButton = document.querySelector("#lightbox-next");
     const homeTiles = document.querySelectorAll(".hero-tile");
     const memoryShots = document.querySelectorAll(".memory-shot");
-    // Add each bundled image here; keep the image files beside the site for public hosting.
-    const photos = [
-      // { src: "photos/our-first-date.jpg", alt: "Our first date", label: "วันแรกของเรา" },
-      // { src: "photos/our-favorite-day.jpg", alt: "Our favorite day", label: "วันโปรดของเรา" },
-    ];
+    const photos = [];
+    const photoBucket = "couple-photos";
+    const maxPhotoBytes = 8 * 1024 * 1024;
+    const maxFilesPerUpload = 5;
+    const allowedPhotoTypes = new Map([
+      ["image/jpeg", "jpg"],
+      ["image/png", "png"],
+      ["image/webp", "webp"],
+      ["image/gif", "gif"]
+    ]);
+    const supabaseConfig = window.SUPABASE_CONFIG || {};
+    const supabaseUrl = typeof supabaseConfig.url === "string" ? supabaseConfig.url.replace(/\/+$/, "") : "";
+    const supabasePublishableKey = typeof supabaseConfig.publishableKey === "string" ? supabaseConfig.publishableKey.trim() : "";
+    const supabaseReady = /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(supabaseUrl) && supabasePublishableKey.length > 0;
     let currentPhotoIndex = 0;
     let touchStartX = 0;
 
     function renderPhotoMoments() {
-      if (photos.length) {
-        emptyState.remove();
-        photoCount.textContent = `${photos.length} รูป`;
-      }
+      gallery.replaceChildren();
+      photoCount.textContent = `${photos.length} รูป`;
+      if (!photos.length) {
+        gallery.append(emptyState);
+      } else {
+        for (const [index, photo] of photos.entries()) {
+          const item = document.createElement("button");
+          item.className = "gallery-item";
+          item.type = "button";
+          item.setAttribute("aria-label", `เปิดดูรูป ${photo.label || photo.alt || `รูปที่ ${index + 1}`}`);
 
-      for (const [index, photo] of photos.entries()) {
-        const item = document.createElement("button");
-        item.className = "gallery-item";
-        item.type = "button";
-        item.setAttribute("aria-label", `เปิดดูรูป ${photo.label || photo.alt || `รูปที่ ${index + 1}`}`);
+          const image = document.createElement("img");
+          image.src = photo.src;
+          image.alt = photo.alt || photo.label || `ความทรงจำที่ ${index + 1}`;
+          image.loading = "lazy";
 
-        const image = document.createElement("img");
-        image.src = photo.src;
-        image.alt = photo.alt || photo.label || `ความทรงจำที่ ${index + 1}`;
-        image.loading = "lazy";
+          const caption = document.createElement("span");
+          caption.className = "gallery-caption";
+          caption.textContent = `♡ ${photo.label || photo.alt || `ความทรงจำที่ ${index + 1}`}`;
 
-        const caption = document.createElement("span");
-        caption.className = "gallery-caption";
-        caption.textContent = `♡ ${photo.label || photo.alt || `ความทรงจำที่ ${index + 1}`}`;
-
-        item.append(image, caption);
-        item.addEventListener("click", () => openLightbox(index));
-        gallery.append(item);
+          item.append(image, caption);
+          item.addEventListener("click", () => openLightbox(index));
+          gallery.append(item);
+        }
       }
 
       for (const [index, tile] of Array.from(homeTiles).entries()) {
@@ -820,6 +844,142 @@
         shot.onclick = () => openLightbox(photos.indexOf(photo));
       }
     }
+
+    function getPhotoPublicUrl(objectPath) {
+      const encodedPath = objectPath.split("/").map(encodeURIComponent).join("/");
+      return `${supabaseUrl}/storage/v1/object/public/${photoBucket}/${encodedPath}`;
+    }
+
+    function getSupabaseHeaders(contentType) {
+      const headers = {
+        apikey: supabasePublishableKey,
+        Authorization: `Bearer ${supabasePublishableKey}`
+      };
+      if (contentType) headers["Content-Type"] = contentType;
+      return headers;
+    }
+
+    async function readSupabaseResponse(response) {
+      if (response.ok) return;
+      const detail = (await response.text()).slice(0, 240);
+      throw new Error(`Supabase ตอบกลับ ${response.status}: ${detail || response.statusText}`);
+    }
+
+    async function loadPhotos() {
+      uploadInput.disabled = !supabaseReady;
+      uploadButton.classList.toggle("is-disabled", !supabaseReady);
+      if (!supabaseReady) {
+        uploadStatus.textContent = "ยังเชื่อมต่อพื้นที่เก็บรูปไม่ครบ — ดูวิธีตั้งค่าใน SUPABASE-SETUP.md";
+        renderPhotoMoments();
+        return false;
+      }
+
+      uploadStatus.textContent = "กำลังโหลดรูปจากอัลบั้ม…";
+      try {
+        const query = new URLSearchParams({
+          select: "object_path,alt,label,created_at",
+          order: "created_at.desc"
+        });
+        const response = await fetch(`${supabaseUrl}/rest/v1/photos?${query}`, {
+          cache: "no-store",
+          headers: getSupabaseHeaders()
+        });
+        await readSupabaseResponse(response);
+        const rows = await response.json();
+        if (!Array.isArray(rows)) throw new Error("รายการรูปจาก Supabase ไม่ใช่ข้อมูลแบบ array");
+
+        photos.splice(0, photos.length, ...rows.map((row) => ({
+          src: getPhotoPublicUrl(row.object_path),
+          alt: row.alt || row.label || "ความทรงจำของเรา",
+          label: row.label || row.alt || "ความทรงจำของเรา"
+        })));
+        renderPhotoMoments();
+        uploadStatus.textContent = photos.length ? `อัลบั้มพร้อมแล้ว · ${photos.length} รูป ♡` : "อัลบั้มพร้อมแล้ว เพิ่มรูปแรกได้เลย ♡";
+        return true;
+      } catch (error) {
+        console.error("Could not load the shared photo album.", error);
+        uploadStatus.textContent = `โหลดอัลบั้มไม่สำเร็จ: ${error.message}`;
+        return false;
+      }
+    }
+
+    async function uploadPhoto(file) {
+      const extension = allowedPhotoTypes.get(file.type);
+      if (!extension) throw new Error(`${file.name}: รองรับเฉพาะ JPG, PNG, WebP และ GIF`);
+      if (file.size > maxPhotoBytes) throw new Error(`${file.name}: ไฟล์ใหญ่เกิน 8 MB`);
+      if (file.size === 0) throw new Error(`${file.name}: ไฟล์ว่างเปล่า`);
+
+      const objectPath = `${crypto.randomUUID()}.${extension}`;
+      const storageResponse = await fetch(
+        `${supabaseUrl}/storage/v1/object/${photoBucket}/${objectPath}`,
+        {
+          method: "POST",
+          headers: {
+            ...getSupabaseHeaders(file.type),
+            "x-upsert": "false"
+          },
+          body: file
+        }
+      );
+      await readSupabaseResponse(storageResponse);
+
+      const label = file.name.replace(/\.[^.]+$/, "").trim().slice(0, 80) || "ความทรงจำของเรา";
+      const photoResponse = await fetch(`${supabaseUrl}/rest/v1/photos`, {
+        method: "POST",
+        headers: {
+          ...getSupabaseHeaders("application/json"),
+          Prefer: "return=minimal"
+        },
+        body: JSON.stringify({ object_path: objectPath, alt: label, label })
+      });
+      try {
+        await readSupabaseResponse(photoResponse);
+      } catch (error) {
+        throw new Error(`${file.name}: อัปโหลดไฟล์แล้ว แต่บันทึกลงอัลบั้มไม่สำเร็จ (${error.message})`);
+      }
+    }
+
+    uploadInput.addEventListener("change", async (event) => {
+      const files = Array.from(event.target.files || []);
+      uploadInput.value = "";
+      if (!files.length) return;
+      if (!supabaseReady) {
+        uploadStatus.textContent = "ยังไม่ได้ตั้งค่าพื้นที่เก็บรูปออนไลน์";
+        return;
+      }
+      if (files.length > maxFilesPerUpload) {
+        uploadStatus.textContent = `เพิ่มได้ครั้งละไม่เกิน ${maxFilesPerUpload} รูป`;
+        return;
+      }
+
+      uploadInput.disabled = true;
+      uploadStatus.textContent = `กำลังเพิ่ม ${files.length} รูป…`;
+      let uploadedCount = 0;
+      const failures = [];
+      try {
+        for (const [index, file] of files.entries()) {
+          uploadStatus.textContent = `กำลังเพิ่มรูปที่ ${index + 1} จาก ${files.length}…`;
+          try {
+            await uploadPhoto(file);
+            uploadedCount += 1;
+          } catch (error) {
+            console.error("Could not upload photo.", error);
+            failures.push(error.message);
+          }
+        }
+
+        const albumLoaded = uploadedCount ? await loadPhotos() : true;
+        if (!albumLoaded) {
+          uploadStatus.textContent = `${uploadedCount} รูปถูกอัปโหลดแล้ว แต่โหลดรายการอัลบั้มกลับมาไม่สำเร็จ กรุณารีเฟรช`;
+        } else if (failures.length) {
+          uploadStatus.textContent = `${uploadedCount} รูปสำเร็จ · ${failures.join(" · ")}`;
+        } else {
+          uploadStatus.textContent = `เพิ่ม ${uploadedCount} รูปแล้ว ทุกคนเปิดดูได้เลย ♡`;
+        }
+      } finally {
+        uploadInput.disabled = false;
+      }
+    });
 
     function openLightbox(index) {
       if (!photos.length) return;
@@ -912,7 +1072,7 @@
       burstHearts(event.clientX, event.clientY);
     });
 
-    renderPhotoMoments();
+    loadPhotos();
   </script>
 </body>
 </html>
