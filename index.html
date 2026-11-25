@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff7f2">
+  <title>ถึงคนโปรดของเรา ♡</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Kanit:wght@300;400;500;600&display=swap');
+
+    :root {
+      color-scheme: light;
+      --ink: #59413f;
+      --muted: #9c7d79;
+      --rose: #d9777a;
+      --deep-rose: #bb5c68;
+      --blush: #f7ded8;
+      --paper: #fffaf6;
+      --cream: #fff7f2;
+      --line: #f0dfd6;
+      --shadow: 0 22px 65px rgb(117 71 65 / 10%);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 10% 12%, rgb(250 218 210 / 60%), transparent 29rem),
+        radial-gradient(ellipse at 92% 43%, rgb(255 228 219 / 68%), transparent 25rem),
+        var(--cream);
+      font-family: "DM Sans", "Kanit", sans-serif;
+      overflow-x: hidden;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+
+    .page {
+      width: min(1120px, calc(100% - 44px));
+      margin-inline: auto;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-block: 25px;
+      color: var(--muted);
+      font-size: .83rem;
+      letter-spacing: .04em;
+    }
+
+    .brand { color: var(--deep-rose); font-weight: 700; }
+    .top-note { display: flex; align-items: center; gap: 8px; }
+
+    .hero {
+      min-height: 550px;
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      align-items: center;
+      gap: 50px;
+      padding: 48px 0 70px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 13px;
+      border: 1px solid #f0d7d0;
+      border-radius: 999px;
+      background: rgb(255 250 246 / 75%);
+      color: var(--deep-rose);
+      font-size: .77rem;
+      letter-spacing: .04em;
+    }
+
+    h1, h2, p { margin-top: 0; }
+
+    h1 {
+      margin: 21px 0 15px;
+      font-family: "Kanit", sans-serif;
+      font-size: clamp(2.6rem, 6vw, 4.7rem);
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: -.045em;
+    }
+
+    h1 span { color: var(--deep-rose); }
+
+    .hero-copy {
+      max-width: 440px;
+      color: var(--muted);
+      font-family: "Kanit", sans-serif;
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.9;
+    }
+
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+
+    .button {
+      min-height: 47px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 9px;
+      padding: 0 19px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s, background .2s;
+    }
+
+    .button:hover { transform: translateY(-2px); }
+    .button-primary { background: var(--deep-rose); color: white; box-shadow: 0 9px 22px rgb(187 92 104 / 22%); }
+    .button-primary:hover { background: #a94c59; box-shadow: 0 12px 25px rgb(187 92 104 / 28%); }
+    .button-soft { border-color: var(--line); background: var(--paper); color: var(--deep-rose); }
+
+    .photo-stack {
+      position: relative;
+      width: min(100%, 430px);
+      height: 410px;
+      justify-self: center;
+    }
+
+    .stack-photo {
+      position: absolute;
+      overflow: hidden;
+      border: 10px solid white;
+      border-bottom-width: 34px;
+      border-radius: 5px;
+      background: linear-gradient(145deg, #f8dcd4, #fcefe5);
+      box-shadow: 0 19px 42px rgb(105 69 60 / 16%);
+      transition: transform .35s;
+    }
+
+    .stack-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .stack-photo.back { inset: 36px 38px 45px 54px; transform: rotate(9deg); }
+    .stack-photo.front { inset: 21px 66px 54px 25px; transform: rotate(-7deg); }
+    .photo-stack:hover .stack-photo.back { transform: rotate(13deg) translate(5px, -2px); }
+    .photo-stack:hover .stack-photo.front { transform: rotate(-10deg) translate(-4px, -3px); }
+
+    .photo-placeholder {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-content: center;
+      justify-items: center;
+      gap: 10px;
+      color: #b9857e;
+      text-align: center;
+      font-family: "Kanit", sans-serif;
+      font-size: .94rem;
+    }
+
+    .photo-placeholder .big-heart { font-size: 2.3rem; }
+
+    .tape {
+      position: absolute;
+      z-index: 2;
+      top: 4px;
+      left: 37%;
+      width: 78px;
+      height: 23px;
+      transform: rotate(-8deg);
+      background: rgb(255 225 177 / 75%);
+    }
+
+    .scribble {
+      position: absolute;
+      right: -3px;
+      bottom: 17px;
+      z-index: 3;
+      transform: rotate(9deg);
+      color: var(--deep-rose);
+      font-family: "Kanit", sans-serif;
+      font-size: 1.3rem;
+    }
+
+    .section { padding: 62px 0; }
+    .section-heading { margin-bottom: 27px; text-align: center; }
+    .section-heading .eyebrow { margin-bottom: 13px; }
+    h2 { margin-bottom: 8px; font-family: "Kanit", sans-serif; font-size: clamp(1.8rem, 4vw, 2.55rem); font-weight: 500; }
+    .section-subtitle { margin-bottom: 0; color: var(--muted); font-family: "Kanit", sans-serif; font-weight: 300; }
+
+    .gallery-card {
+      padding: 23px;
+      border: 1px solid rgb(240 223 214 / 80%);
+      border-radius: 24px;
+      background: rgb(255 250 246 / 80%);
+      box-shadow: var(--shadow);
+    }
+
+    .gallery-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 19px;
+    }
+
+    .gallery-label { color: var(--muted); font-size: .85rem; }
+    .gallery-label strong { color: var(--ink); }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .gallery-item {
+      position: relative;
+      min-height: 190px;
+      aspect-ratio: 1 / 1.08;
+      overflow: hidden;
+      padding: 0;
+      border: 0;
+      border-radius: 15px;
+      background: linear-gradient(145deg, #f5ded7, #fff0e8);
+      cursor: zoom-in;
+    }
+
+    .gallery-item img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .4s; }
+    .gallery-item:hover img { transform: scale(1.06); }
+    .gallery-caption {
+      position: absolute;
+      inset: auto 0 0;
+      padding: 32px 12px 11px;
+      background: linear-gradient(transparent, rgb(45 29 28 / 62%));
+      color: white;
+      font-family: "Kanit", sans-serif;
+      text-align: left;
+      font-size: .85rem;
+    }
+
+    .gallery-empty {
+      grid-column: 1 / -1;
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      padding: 40px 15px;
+      border: 1px dashed #e8c9c0;
+      border-radius: 15px;
+      color: var(--muted);
+      text-align: center;
+      font-family: "Kanit", sans-serif;
+      font-weight: 300;
+    }
+
+    .gallery-empty span { color: var(--rose); font-size: 1.8rem; }
+
+    .letter-wrap { padding: 44px 0 76px; }
+    .letter {
+      position: relative;
+      max-width: 720px;
+      margin: auto;
+      padding: 35px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background:
+        repeating-linear-gradient(transparent 0 37px, rgb(224 185 173 / 21%) 38px 39px),
+        var(--paper);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .letter::before, .letter::after {
+      position: absolute;
+      top: -34px;
+      width: 93px;
+      height: 63px;
+      content: "";
+      background: #f7d9d1;
+      opacity: .7;
+    }
+    .letter::before { left: -33px; transform: rotate(-38deg); }
+    .letter::after { right: -33px; transform: rotate(38deg); }
+
+    .letter-seal { margin-bottom: 13px; color: var(--deep-rose); font-size: 1.8rem; }
+    .letter h2 { font-size: 1.7rem; }
+    .letter-copy {
+      max-width: 500px;
+      margin: 0 auto;
+      color: #806764;
+      font-family: "Kanit", sans-serif;
+      font-size: 1rem;
+      font-weight: 300;
+      line-height: 2;
+    }
+    .letter-copy p { margin-bottom: 0; }
+    .letter-sign { margin-top: 16px; color: var(--deep-rose); font-family: "Kanit", sans-serif; }
+    .letter-button { margin-top: 19px; }
+    .hidden-message { display: none; }
+    .hidden-message.is-open { display: block; animation: appear .65s ease both; }
+    @keyframes appear { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+
+    footer { padding: 0 0 30px; color: #ad918b; text-align: center; font-size: .78rem; }
+
+    .heart {
+      position: fixed;
+      z-index: 20;
+      pointer-events: none;
+      animation: float-up 1.35s ease-out forwards;
+    }
+    @keyframes float-up {
+      0% { opacity: 0; transform: translate(-50%, 0) scale(.5) rotate(-12deg); }
+      15% { opacity: 1; }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--drift)), -125px) scale(1.25) rotate(16deg); }
+    }
+
+    .lightbox {
+      position: fixed;
+      z-index: 30;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 24px;
+      background: rgb(44 30 29 / 86%);
+      backdrop-filter: blur(7px);
+    }
+    .lightbox.is-visible { display: grid; }
+    .lightbox img { max-width: min(92vw, 900px); max-height: 82vh; object-fit: contain; border: 8px solid white; border-radius: 8px; box-shadow: 0 25px 80px #0005; }
+    .lightbox-close {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgb(255 255 255 / 35%);
+      border-radius: 50%;
+      background: rgb(255 255 255 / 14%);
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 760px) {
+      .hero { min-height: auto; grid-template-columns: 1fr; gap: 22px; padding: 39px 0 34px; text-align: center; }
+      .hero-copy { margin-inline: auto; }
+      .hero-actions { justify-content: center; }
+      .photo-stack { height: 350px; }
+      .section { padding: 43px 0; }
+      .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .gallery-item { min-height: 150px; }
+    }
+
+    @media (max-width: 440px) {
+      .page { width: min(100% - 28px, 1120px); }
+      .topbar { padding-block: 19px; font-size: .73rem; }
+      .photo-stack { height: 305px; }
+      .gallery-card { padding: 15px; }
+      .gallery-toolbar { align-items: flex-start; flex-direction: column; }
+      .gallery-item { min-height: 130px; }
+      .letter { padding: 31px 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+
+    /* A small, hash-routed scrapbook that feels like turning through pages. */
+    body { padding-bottom: 24px; }
+    .topbar { width: min(1240px, calc(100% - 48px)); gap: 20px; }
+    .brand { text-decoration: none; white-space: nowrap; }
+    .top-nav { display: flex; align-items: center; gap: 7px; }
+    .top-nav a {
+      padding: 9px 13px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: .79rem;
+      text-decoration: none;
+      transition: background .2s, color .2s;
+    }
+    .top-nav a:hover, .top-nav a[aria-current="page"] { background: white; color: var(--deep-rose); }
+    .top-note { white-space: nowrap; }
+    .view { display: none; min-height: min(720px, calc(100svh - 110px)); animation: page-in .55s cubic-bezier(.2,.7,.25,1) both; }
+    .view.is-active { display: block; }
+    @keyframes page-in { from { opacity: 0; transform: translateY(14px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .wide-page { width: min(1240px, calc(100% - 48px)); margin-inline: auto; }
+    .home-hero {
+      min-height: min(720px, calc(100svh - 110px));
+      display: grid;
+      grid-template-columns: .82fr 1.18fr;
+      align-items: center;
+      gap: clamp(24px, 6vw, 86px);
+      padding-block: 36px 68px;
+    }
+    .home-copy { position: relative; z-index: 1; padding-left: clamp(0px, 3vw, 36px); }
+    .home-copy h1 { margin-top: 24px; font-size: clamp(3.2rem, 7vw, 6.7rem); line-height: 1.06; }
+    .home-copy h1 span { display: inline-block; transform: rotate(-9deg); }
+    .home-copy .hero-copy { max-width: 355px; margin-bottom: 0; }
+    .home-actions { margin-top: 29px; }
+    .home-art {
+      position: relative;
+      min-height: 500px;
+      display: grid;
+      grid-template-columns: .86fr 1.14fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 15px;
+      padding: 12px 35px 20px 10px;
+      transform: rotate(1.7deg);
+    }
+    .hero-tile, .memory-shot {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 120px;
+      overflow: hidden;
+      padding: 0;
+      border: 0;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #f3d9d2, #fff0e8 55%, #e8c9bc);
+      box-shadow: 0 18px 45px rgb(117 71 65 / 13%);
+      cursor: zoom-in;
+    }
+    .hero-tile img, .memory-shot img { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; transition: transform .6s cubic-bezier(.2,.7,.25,1); }
+    .hero-tile:hover img, .memory-shot:hover img { transform: scale(1.06); }
+    .hero-tile:first-child { grid-row: span 2; transform: translateY(22px); }
+    .hero-tile:nth-child(2) { min-height: 280px; }
+    .hero-tile:nth-child(3) { min-height: 170px; transform: translateX(-24px); }
+    .tile-empty { display: grid; justify-items: center; gap: 8px; padding: 15px; color: #b9857e; font-family: "Kanit", sans-serif; text-align: center; }
+    .tile-empty b { font-size: 2rem; font-weight: 400; }
+    .hero-doodle { position: absolute; z-index: 2; color: var(--deep-rose); font-size: 2.4rem; filter: drop-shadow(0 3px 4px white); animation: bob 3.2s ease-in-out infinite; }
+    .hero-doodle.doodle-one { top: 0; right: 12%; }
+    .hero-doodle.doodle-two { bottom: 1%; left: -1%; animation-delay: -1.2s; }
+    @keyframes bob { 50% { transform: translateY(-9px) rotate(9deg); } }
+    .photo-hint { position: absolute; right: 0; bottom: -3px; color: var(--muted); font-family: "Kanit", sans-serif; font-size: .83rem; transform: rotate(-2deg); }
+    .page-intro { padding: 43px 0 26px; }
+    .page-intro h1 { margin: 15px 0 4px; font-family: "Kanit", sans-serif; font-size: clamp(2.4rem, 5vw, 4.1rem); font-weight: 500; line-height: 1.18; }
+    .page-intro p { margin: 0; color: var(--muted); font-family: "Kanit", sans-serif; font-weight: 300; }
+    .gallery-page { padding-bottom: 45px; }
+    .gallery-card { padding: 23px; }
+    .gallery { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 15px; }
+    .gallery-item { min-height: 190px; border-radius: 12px; }
+    .gallery-item:nth-child(5n + 1) { grid-row: span 2; aspect-ratio: .79; }
+    .gallery-item:nth-child(5n + 3) { aspect-ratio: 1.18; }
+    .gallery-empty { min-height: 270px; align-content: center; }
+    .memories-page { padding-bottom: 54px; }
+    .memory-layout {
+      display: grid;
+      grid-template-columns: .78fr 1.22fr;
+      align-items: center;
+      gap: clamp(25px, 6vw, 75px);
+      padding-block: 5px 35px;
+    }
+    .memory-copy { padding: 20px 0; }
+    .memory-copy h2 { margin: 15px 0 8px; font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.2; }
+    .memory-copy p { color: var(--muted); font-family: "Kanit", sans-serif; font-weight: 300; line-height: 1.9; }
+    .memory-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 190px 190px;
+      gap: 13px;
+      transform: rotate(-1.5deg);
+    }
+    .memory-shot { border: 7px solid white; border-radius: 5px; background: linear-gradient(145deg, #f1d8ce, #fff1e9); }
+    .memory-shot:first-child { grid-row: span 2; }
+    .memory-shot::after { position: absolute; inset: auto 0 0; height: 65px; content: ""; background: linear-gradient(transparent, rgb(45 29 28 / 44%)); }
+    .memory-label { position: absolute; z-index: 1; bottom: 12px; left: 12px; color: white; font-family: "Kanit", sans-serif; font-size: .8rem; }
+    .memory-empty { position: relative; z-index: 1; padding: 18px; color: #b9857e; font-family: "Kanit", sans-serif; text-align: center; }
+    .memory-empty span { display: block; margin-bottom: 7px; font-size: 1.8rem; }
+    .polaroid-note { display: inline-block; margin-top: 11px; padding: 11px 15px; background: #fff3d8; color: #997760; font-family: "Kanit", sans-serif; font-size: .85rem; transform: rotate(-3deg); }
+    .letter-page { display: grid; place-items: center; padding: 36px 0 60px; }
+    .letter-scene { position: relative; width: min(760px, 100%); min-height: 510px; display: grid; place-items: center; overflow: hidden; border: 1px solid #f3e5dc; border-radius: 30px; background: radial-gradient(ellipse at 50% 70%, #f9ded6, #fff9f4 63%); }
+    .letter-scene::before, .letter-scene::after { position: absolute; content: "♡"; color: rgb(217 119 122 / 19%); font-size: 15rem; }
+    .letter-scene::before { top: -105px; left: -38px; transform: rotate(-18deg); }
+    .letter-scene::after { right: -40px; bottom: -119px; transform: rotate(15deg); }
+    .envelope {
+      position: relative;
+      z-index: 1;
+      width: min(440px, calc(100% - 44px));
+      min-height: 272px;
+      display: grid;
+      place-items: center;
+      padding: 30px;
+      border: 1px solid #edc9c0;
+      border-radius: 8px 8px 22px 22px;
+      background: linear-gradient(145deg, #f5d4ce, #edc1bb);
+      box-shadow: 0 30px 60px rgb(117 71 65 / 17%);
+      transition: transform .6s cubic-bezier(.2,.7,.25,1), opacity .5s;
+    }
+    .envelope::before { position: absolute; inset: 0; content: ""; background: linear-gradient(32deg, transparent 49.5%, rgb(255 255 255 / 27%) 50%, transparent 50.5%), linear-gradient(-32deg, transparent 49.5%, rgb(255 255 255 / 27%) 50%, transparent 50.5%); }
+    .envelope-stamp { position: relative; width: 64px; height: 64px; display: grid; place-items: center; border: 1px dashed #c27678; border-radius: 50%; background: #fff7f2; color: var(--deep-rose); font-size: 1.8rem; box-shadow: 0 4px 12px rgb(117 71 65 / 10%); }
+    .envelope-label { position: absolute; right: 0; bottom: 24px; left: 0; color: #9c5e65; font-family: "Kanit", sans-serif; text-align: center; }
+    .letter-card {
+      position: absolute;
+      z-index: 2;
+      width: min(500px, calc(100% - 42px));
+      min-height: 330px;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      padding: clamp(25px, 6vw, 49px);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: repeating-linear-gradient(transparent 0 35px, rgb(224 185 173 / 20%) 36px 37px), var(--paper);
+      box-shadow: 0 20px 55px rgb(117 71 65 / 16%);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(80px) scale(.88);
+      pointer-events: none;
+      transition: opacity .55s, transform .7s cubic-bezier(.2,.8,.25,1);
+    }
+    .letter-scene.is-open .envelope { opacity: .16; transform: translateY(100px) scale(.84) rotate(-5deg); }
+    .letter-scene.is-open .letter-card { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+    .letter-card h2 { margin: 0 0 12px; color: var(--deep-rose); }
+    .letter-card p { margin: 0; color: #806764; font-family: "Kanit", sans-serif; font-weight: 300; line-height: 2; }
+    .letter-sign { color: var(--deep-rose); }
+    .page-controls { width: min(1240px, calc(100% - 48px)); display: flex; justify-content: space-between; align-items: center; margin: 0 auto 34px; padding-top: 17px; border-top: 1px solid rgb(224 196 186 / 65%); }
+    .page-dots { display: flex; align-items: center; gap: 8px; }
+    .page-dots a { width: 8px; height: 8px; display: block; border-radius: 999px; background: #e7c8bf; transition: width .25s, background .25s; }
+    .page-dots a[aria-current="page"] { width: 25px; background: var(--deep-rose); }
+    .page-step { min-width: 130px; }
+    .page-step.next { margin-left: auto; }
+    .page-step:disabled { opacity: .35; cursor: default; transform: none; }
+    .page-step span { color: #fff; }
+    .lightbox { grid-template-columns: 54px minmax(0, 1fr) 54px; gap: 12px; }
+    .lightbox.is-visible { display: grid; }
+    .lightbox img { grid-column: 2; grid-row: 1; }
+    .lightbox-close { z-index: 2; }
+    .lightbox-arrow {
+      width: 48px; height: 48px; border: 1px solid rgb(255 255 255 / 45%); border-radius: 50%;
+      background: rgb(255 255 255 / 12%); color: white; font-size: 1.5rem; cursor: pointer;
+    }
+    #lightbox-prev { grid-column: 1; grid-row: 1; justify-self: end; }
+    #lightbox-next { grid-column: 3; grid-row: 1; justify-self: start; }
+    .lightbox-caption { position: absolute; right: 70px; bottom: 16px; left: 70px; color: white; text-align: center; font-family: "Kanit", sans-serif; }
+    .sprinkle { position: fixed; z-index: 19; top: -20px; pointer-events: none; animation: sprinkle-fall var(--fall-time) linear forwards; }
+    @keyframes sprinkle-fall { to { transform: translate(var(--drift), 110vh) rotate(500deg); opacity: .1; } }
+
+    @media (max-width: 850px) {
+      .topbar { width: min(100% - 32px, 1240px); flex-wrap: wrap; }
+      .top-note { display: none; }
+      .top-nav { order: 2; width: 100%; justify-content: space-between; padding-top: 6px; border-top: 1px solid rgb(224 196 186 / 55%); }
+      .top-nav a { padding-inline: 9px; font-size: .73rem; }
+      .wide-page, .page-controls { width: min(100% - 32px, 1240px); }
+      .home-hero { min-height: auto; grid-template-columns: 1fr; gap: 12px; padding-top: 20px; }
+      .home-copy { padding: 5px 0; text-align: center; }
+      .home-copy .hero-copy { margin-inline: auto; }
+      .home-actions { justify-content: center; }
+      .home-art { width: min(610px, 100%); min-height: 430px; margin-inline: auto; }
+      .memory-layout { grid-template-columns: 1fr; gap: 16px; }
+      .memory-copy { padding-bottom: 0; text-align: center; }
+      .memory-copy p { max-width: 430px; margin-inline: auto; }
+      .memory-grid { width: min(600px, 100%); margin-inline: auto; }
+      .view { min-height: calc(100svh - 150px); }
+    }
+    @media (max-width: 560px) {
+      .topbar { padding-block: 14px; }
+      .top-nav { gap: 0; }
+      .top-nav a { padding: 8px 7px; font-size: .68rem; }
+      .home-hero { gap: 0; }
+      .home-copy h1 { font-size: clamp(3rem, 15vw, 5rem); }
+      .home-art { min-height: 340px; gap: 9px; padding: 10px 24px 20px 3px; }
+      .hero-tile:nth-child(2) { min-height: 200px; }
+      .hero-tile:nth-child(3) { min-height: 125px; transform: translateX(-15px); }
+      .page-intro { padding-top: 27px; }
+      .gallery-card { padding: 13px; }
+      .gallery { gap: 9px; }
+      .gallery-item { min-height: 130px; }
+      .gallery-item:nth-child(5n + 1) { min-height: 270px; }
+      .gallery-toolbar { align-items: center; flex-direction: row; }
+      .gallery-label { font-size: .7rem; }
+      .memory-grid { grid-template-rows: 145px 145px; gap: 8px; }
+      .memory-shot { border-width: 5px; }
+      .letter-scene { min-height: 465px; }
+      .page-controls { width: calc(100% - 28px); }
+      .page-step { min-width: auto; padding-inline: 13px; }
+      .lightbox { grid-template-columns: 35px minmax(0, 1fr) 35px; gap: 3px; padding: 12px; }
+      .lightbox-arrow { width: 34px; height: 40px; border: 0; background: transparent; font-size: 1.3rem; }
+      .lightbox img { max-width: 100%; border-width: 5px; }
+      .lightbox-caption { right: 18px; bottom: 10px; left: 18px; font-size: .85rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar wide-page">
+    <a class="brand" href="#home" aria-label="กลับไปหน้าแรก">♡ little love note</a>
+    <nav class="top-nav" aria-label="เมนูหลัก">
+      <a href="#home" data-page-link="home">หน้าแรก</a>
+      <a href="#photos" data-page-link="photos">รูปของเรา</a>
+      <a href="#memories" data-page-link="memories">ความทรงจำ</a>
+      <a href="#letter" data-page-link="letter">จดหมาย</a>
+    </nav>
+    <span class="top-note">made with love <span aria-hidden="true">✿</span></span>
+  </header>
+
+  <main id="pages">
+    <section class="view is-active" data-page="home" aria-labelledby="main-title">
+      <div class="home-hero wide-page">
+        <div class="home-copy">
+          <span class="eyebrow">✦ a little surprise for you</span>
+          <h1 id="main-title">ถึงคนโปรด<br>ของเรา <span>♡</span></h1>
+          <p class="hero-copy">บางความทรงจำไม่ต้องใช้คำพูดเยอะ แค่มีเธออยู่ในรูปก็พิเศษแล้ว</p>
+          <div class="hero-actions home-actions">
+            <a class="button button-primary" href="#photos">เริ่มดูรูปของเรา <span aria-hidden="true">♡</span></a>
+            <a class="button button-soft" href="#memories">ไปหน้าถัดไป ↗</a>
+          </div>
+        </div>
+        <div class="home-art" aria-label="รูปความทรงจำของเรา">
+          <div class="hero-tile"><div class="tile-empty"><b>♡</b>รูปคู่ที่ชอบที่สุด</div></div>
+          <div class="hero-tile"><div class="tile-empty"><b>✿</b>ช่วงเวลาที่มีเธอ</div></div>
+          <div class="hero-tile"><div class="tile-empty"><b>☼</b>วันธรรมดาที่แสนพิเศษ</div></div>
+          <span class="hero-doodle doodle-one" aria-hidden="true">✧</span>
+          <span class="hero-doodle doodle-two" aria-hidden="true">♡</span>
+          <span class="photo-hint">ค่อยๆ เปิดดูนะ มีรูปของเราอยู่ข้างใน →</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" data-page="photos" aria-labelledby="gallery-title">
+      <div class="gallery-page wide-page">
+        <div class="page-intro">
+          <span class="eyebrow">01 · little photo dump</span>
+          <h1 id="gallery-title">รูปโปรดของเรา 📸</h1>
+          <p>เลือกรูปที่ทำให้คิดถึงกัน แล้วเก็บไว้ในอัลบั้มนี้เลย</p>
+        </div>
+        <div class="gallery-card">
+          <div class="gallery-toolbar">
+            <span class="gallery-label"><strong id="photo-count">0 รูป</strong> · ความทรงจำของเราสองคน</span>
+            <span class="gallery-label">รูปอยู่กับเว็บไซต์ รีเฟรชก็ไม่หาย ♡</span>
+          </div>
+          <div class="gallery" id="gallery" aria-live="polite">
+            <div class="gallery-empty" id="gallery-empty"><span>♡</span>อัลบั้มนี้ยังรอรูปของเราอยู่นะ<br>เพิ่มรูปไว้ในโฟลเดอร์ photos แล้วใส่ชื่อไฟล์ในรายการรูปของหน้าเว็บ</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" data-page="memories" aria-labelledby="memories-title">
+      <div class="memories-page wide-page">
+        <div class="page-intro">
+          <span class="eyebrow">02 · our little moments</span>
+          <h1 id="memories-title">เรื่องราวของเรา ✿</h1>
+          <p>วันไหนก็เป็นวันโปรดได้ ถ้าได้ใช้เวลาด้วยกัน</p>
+        </div>
+        <div class="memory-layout">
+          <div class="memory-copy">
+            <span class="eyebrow">you make life sweeter</span>
+            <h2>ความสุขของเรา<br>หน้าตาเหมือนเธอ</h2>
+            <p>ตั้งแต่วันแรกจนถึงวันนี้ มีเรื่องเล็กๆ มากมายที่อยากจำไว้ ทุกภาพคือชิ้นส่วนเล็กๆ ของคำว่า “เรา”</p>
+            <span class="polaroid-note">เก็บโมเมนต์เล็กๆ ไว้ให้ครบเลยนะ ♡</span>
+          </div>
+          <div class="memory-grid" id="memory-grid" aria-label="ภาพความทรงจำของเรา">
+            <button class="memory-shot" type="button" aria-label="ดูรูปความทรงจำที่หนึ่ง"><span class="memory-empty"><span>♡</span>วันแรกของเรา</span><span class="memory-label">the beginning</span></button>
+            <button class="memory-shot" type="button" aria-label="ดูรูปความทรงจำที่สอง"><span class="memory-empty"><span>☼</span>วันที่หัวเราะด้วยกัน</span><span class="memory-label">favorite day</span></button>
+            <button class="memory-shot" type="button" aria-label="ดูรูปความทรงจำที่สาม"><span class="memory-empty"><span>✿</span>และอีกหลายวันต่อจากนี้</span><span class="memory-label">to be continued...</span></button>
+          </div>
+        </div>
+        <div style="text-align:center"><a class="button button-soft" href="#photos">กลับไปเลือกรูปเพิ่ม ♡</a></div>
+      </div>
+    </section>
+
+    <section class="view" data-page="letter" aria-labelledby="letter-title">
+      <div class="letter-page wide-page">
+        <div class="letter-scene" id="letter-scene">
+          <div class="envelope" aria-hidden="true">
+            <span class="envelope-stamp">♡</span>
+            <span class="envelope-label">ถึงคนที่เรารักที่สุด</span>
+          </div>
+          <article class="letter-card">
+            <span class="letter-seal" aria-hidden="true">💌</span>
+            <h2 id="letter-title">ถึงเธอคนเก่ง</h2>
+            <p>ขอบคุณที่เป็นความสบายใจ เป็นรอยยิ้ม และเป็นคนโปรดของเราในทุกๆ วัน<br>รักเธอที่สุดเลยนะ ♡</p>
+            <p class="letter-sign">จากคนที่โชคดีที่สุด · ♡</p>
+          </article>
+        </div>
+        <button class="button button-primary" id="open-letter" type="button" aria-expanded="false" style="margin-top:24px">แตะเปิดจดหมาย ♡</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="page-controls" aria-label="เปลี่ยนหน้า">
+    <button class="button button-soft page-step" id="previous-page" type="button">← ก่อนหน้า</button>
+    <div class="page-dots" aria-label="ตำแหน่งหน้า">
+      <a href="#home" aria-label="หน้า 1: หน้าแรก" data-page-link="home"></a>
+      <a href="#photos" aria-label="หน้า 2: รูปของเรา" data-page-link="photos"></a>
+      <a href="#memories" aria-label="หน้า 3: ความทรงจำ" data-page-link="memories"></a>
+      <a href="#letter" aria-label="หน้า 4: จดหมาย" data-page-link="letter"></a>
+    </div>
+    <button class="button button-primary page-step next" id="next-page" type="button">หน้าถัดไป <span>→</span></button>
+  </nav>
+  <footer class="wide-page" style="padding:0 0 24px;color:#ad918b;text-align:center;font-size:.78rem">made with all my heart ♡</footer>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="ดูรูปภาพขนาดใหญ่">
+    <button class="lightbox-close" id="close-lightbox" type="button" aria-label="ปิดรูปภาพ">×</button>
+    <button class="lightbox-arrow" id="lightbox-prev" type="button" aria-label="รูปก่อนหน้า">‹</button>
+    <img id="lightbox-image" alt="">
+    <button class="lightbox-arrow" id="lightbox-next" type="button" aria-label="รูปถัดไป">›</button>
+    <span class="lightbox-caption" id="lightbox-caption"></span>
+  </div>
+
+  <script>
+    const pageNames = ["home", "photos", "memories", "letter"];
+    const pageTitles = {
+      home: "ถึงคนโปรดของเรา ♡",
+      photos: "รูปโปรดของเรา ♡",
+      memories: "เรื่องราวของเรา ♡",
+      letter: "จดหมายถึงเธอ ♡"
+    };
+    const views = Array.from(document.querySelectorAll(".view"));
+    const pageLinks = Array.from(document.querySelectorAll("[data-page-link]"));
+    const previousPageButton = document.querySelector("#previous-page");
+    const nextPageButton = document.querySelector("#next-page");
+    let activePageIndex = 0;
+
+    function showPage(pageName) {
+      const aliases = { "our-moments": "photos", "my-letter": "letter" };
+      pageName = aliases[pageName] || pageName;
+      const requestedIndex = pageNames.indexOf(pageName);
+      activePageIndex = requestedIndex < 0 ? 0 : requestedIndex;
+      const activePage = pageNames[activePageIndex];
+
+      for (const view of views) {
+        const isActive = view.dataset.page === activePage;
+        view.classList.toggle("is-active", isActive);
+        view.setAttribute("aria-hidden", String(!isActive));
+      }
+
+      for (const link of pageLinks) {
+        if (link.dataset.pageLink === activePage) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
+      }
+
+      previousPageButton.disabled = activePageIndex === 0;
+      nextPageButton.disabled = activePageIndex === pageNames.length - 1;
+      nextPageButton.innerHTML = activePageIndex === pageNames.length - 1 ? "จบแล้วนะ ♡" : "หน้าถัดไป <span>→</span>";
+      document.title = pageTitles[activePage];
+    }
+
+    function navigateTo(pageName) {
+      if (!pageNames.includes(pageName)) return;
+      if (window.location.hash === `#${pageName}`) showPage(pageName);
+      else window.location.hash = pageName;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    window.addEventListener("hashchange", () => {
+      showPage(window.location.hash.slice(1));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+    showPage(window.location.hash.slice(1));
+    previousPageButton.addEventListener("click", () => navigateTo(pageNames[activePageIndex - 1]));
+    nextPageButton.addEventListener("click", () => navigateTo(pageNames[activePageIndex + 1]));
+
+    const gallery = document.querySelector("#gallery");
+    const emptyState = document.querySelector("#gallery-empty");
+    const photoCount = document.querySelector("#photo-count");
+    const lightbox = document.querySelector("#lightbox");
+    const lightboxImage = document.querySelector("#lightbox-image");
+    const lightboxCaption = document.querySelector("#lightbox-caption");
+    const closeLightboxButton = document.querySelector("#close-lightbox");
+    const lightboxPreviousButton = document.querySelector("#lightbox-prev");
+    const lightboxNextButton = document.querySelector("#lightbox-next");
+    const homeTiles = document.querySelectorAll(".hero-tile");
+    const memoryShots = document.querySelectorAll(".memory-shot");
+    // Add each bundled image here; keep the image files beside the site for public hosting.
+    const photos = [
+      // { src: "photos/our-first-date.jpg", alt: "Our first date", label: "วันแรกของเรา" },
+      // { src: "photos/our-favorite-day.jpg", alt: "Our favorite day", label: "วันโปรดของเรา" },
+    ];
+    let currentPhotoIndex = 0;
+    let touchStartX = 0;
+
+    function renderPhotoMoments() {
+      if (photos.length) {
+        emptyState.remove();
+        photoCount.textContent = `${photos.length} รูป`;
+      }
+
+      for (const [index, photo] of photos.entries()) {
+        const item = document.createElement("button");
+        item.className = "gallery-item";
+        item.type = "button";
+        item.setAttribute("aria-label", `เปิดดูรูป ${photo.label || photo.alt || `รูปที่ ${index + 1}`}`);
+
+        const image = document.createElement("img");
+        image.src = photo.src;
+        image.alt = photo.alt || photo.label || `ความทรงจำที่ ${index + 1}`;
+        image.loading = "lazy";
+
+        const caption = document.createElement("span");
+        caption.className = "gallery-caption";
+        caption.textContent = `♡ ${photo.label || photo.alt || `ความทรงจำที่ ${index + 1}`}`;
+
+        item.append(image, caption);
+        item.addEventListener("click", () => openLightbox(index));
+        gallery.append(item);
+      }
+
+      for (const [index, tile] of Array.from(homeTiles).entries()) {
+        const photo = photos[index];
+        if (!photo) continue;
+        const image = document.createElement("img");
+        image.src = photo.src;
+        image.alt = photo.alt || photo.label || `ความทรงจำที่ ${index + 1}`;
+        tile.replaceChildren(image);
+        tile.setAttribute("aria-label", `เปิดดูรูป ${photo.label || photo.alt || `รูปที่ ${index + 1}`}`);
+        tile.onclick = () => openLightbox(index);
+      }
+
+      for (const [index, shot] of Array.from(memoryShots).entries()) {
+        const photoIndex = index + 3;
+        const photo = photos[photoIndex] || photos[index];
+        if (!photo) continue;
+        const image = document.createElement("img");
+        image.src = photo.src;
+        image.alt = photo.alt || photo.label || `ความทรงจำที่ ${index + 1}`;
+        const label = shot.querySelector(".memory-label");
+        shot.replaceChildren(image, label);
+        shot.setAttribute("aria-label", `เปิดดูรูป ${photo.label || photo.alt || `ความทรงจำที่ ${index + 1}`}`);
+        shot.onclick = () => openLightbox(photos.indexOf(photo));
+      }
+    }
+
+    function openLightbox(index) {
+      if (!photos.length) return;
+      currentPhotoIndex = (index + photos.length) % photos.length;
+      const photo = photos[currentPhotoIndex];
+      lightboxImage.src = photo.src;
+      lightboxImage.alt = photo.alt || photo.label || "";
+      lightboxCaption.textContent = `${currentPhotoIndex + 1} / ${photos.length} · ${photo.label || photo.alt || ""}`;
+      lightbox.classList.add("is-visible");
+      closeLightboxButton.focus();
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove("is-visible");
+      lightboxImage.removeAttribute("src");
+    }
+
+    function moveLightbox(direction) {
+      if (lightbox.classList.contains("is-visible")) openLightbox(currentPhotoIndex + direction);
+    }
+
+    closeLightboxButton.addEventListener("click", closeLightbox);
+    lightboxPreviousButton.addEventListener("click", () => moveLightbox(-1));
+    lightboxNextButton.addEventListener("click", () => moveLightbox(1));
+    lightbox.addEventListener("click", (event) => {
+      if (event.target === lightbox) closeLightbox();
+    });
+    lightbox.addEventListener("touchstart", (event) => {
+      touchStartX = event.changedTouches[0].clientX;
+    }, { passive: true });
+    lightbox.addEventListener("touchend", (event) => {
+      const distance = event.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(distance) > 55) moveLightbox(distance < 0 ? 1 : -1);
+    }, { passive: true });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeLightbox();
+      if (event.key === "ArrowRight" && lightbox.classList.contains("is-visible")) moveLightbox(1);
+      if (event.key === "ArrowLeft" && lightbox.classList.contains("is-visible")) moveLightbox(-1);
+    });
+
+    const openLetterButton = document.querySelector("#open-letter");
+    const letterScene = document.querySelector("#letter-scene");
+    openLetterButton.addEventListener("click", () => {
+      const isOpen = letterScene.classList.toggle("is-open");
+      openLetterButton.setAttribute("aria-expanded", String(isOpen));
+      openLetterButton.textContent = isOpen ? "ปิดจดหมาย ♡" : "แตะเปิดจดหมาย ♡";
+      if (isOpen) burstHearts(window.innerWidth / 2, window.innerHeight * .55);
+    });
+
+    function burstHearts(x, y) {
+      const hearts = ["♡", "♥", "💕", "✿"];
+      for (let index = 0; index < 10; index += 1) {
+        const heart = document.createElement("span");
+        heart.className = "heart";
+        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        heart.style.left = `${x + (Math.random() - .5) * 90}px`;
+        heart.style.top = `${y + (Math.random() - .5) * 24}px`;
+        heart.style.color = ["#d9777a", "#e79a91", "#d4a074"][index % 3];
+        heart.style.fontSize = `${17 + Math.random() * 15}px`;
+        heart.style.setProperty("--drift", `${(Math.random() - .5) * 100}px`);
+        document.body.append(heart);
+        heart.addEventListener("animationend", () => heart.remove(), { once: true });
+      }
+    }
+
+    function sprinkleFlowers() {
+      const petals = ["✿", "✧", "♡"];
+      for (let index = 0; index < 16; index += 1) {
+        const petal = document.createElement("span");
+        petal.className = "sprinkle";
+        petal.textContent = petals[Math.floor(Math.random() * petals.length)];
+        petal.style.left = `${Math.random() * 100}vw`;
+        petal.style.color = ["#d9777a", "#e7ae91", "#d9b78c"][index % 3];
+        petal.style.fontSize = `${12 + Math.random() * 16}px`;
+        petal.style.setProperty("--drift", `${(Math.random() - .5) * 150}px`);
+        petal.style.setProperty("--fall-time", `${2.5 + Math.random() * 2.5}s`);
+        document.body.append(petal);
+        petal.addEventListener("animationend", () => petal.remove(), { once: true });
+      }
+    }
+
+    pageLinks.forEach((link) => {
+      link.addEventListener("click", (event) => {
+        if (link.dataset.pageLink !== "home") sprinkleFlowers();
+      });
+    });
+
+    document.addEventListener("click", (event) => {
+      if (event.target.closest("button, a, label")) return;
+      burstHearts(event.clientX, event.clientY);
+    });
+
+    renderPhotoMoments();
+  </script>
+</body>
+</html>
